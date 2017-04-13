@@ -41,9 +41,9 @@ void insert(Heap* heap, uint64_t a){
 	
 	// swap to correct heap position
 	while (index != 0 && heap->heapArray[parent(index)] < heap->heapArray[index]) {
-		printf("Parent: %lli, Child: %lli\n", heap->heapArray[parent(index)],heap->heapArray[index]);
+		//printf("Parent: %lli, Child: %lli\n", heap->heapArray[parent(index)],heap->heapArray[index]);
 		swap(&(heap->heapArray[parent(index)]), &(heap->heapArray[index]));
-		printf("Post Swap - Parent: %lli, Child: %lli\n", heap->heapArray[parent(index)],heap->heapArray[index]);
+		//printf("Post Swap - Parent: %lli, Child: %lli\n", heap->heapArray[parent(index)],heap->heapArray[index]);
 
 		index = parent(index);
 	}
@@ -62,7 +62,7 @@ uint64_t extractMax(Heap* heap) {
 	
 	maxHeapify(heap, 0);
 
-	//printf("Popped Value: %lli\n", max_val);
+	printf("Popped Value: %lli\n", max_val);
 
 	return max_val;
 }
@@ -90,14 +90,14 @@ void maxHeapify(Heap* heap, int N) {
 
 // swap values in the heap (so much easier than PA1 omg)
 void swap(uint64_t* first, uint64_t* second){
-	printf("InSwap - First: %lli, Second: %lli\n", *first, *second);
+	//printf("InSwap - First: %lli, Second: %lli\n", *first, *second);
 
 	// create temp variable
-	uint64_t* temp = first;
-	first = second;
-	second = temp;
+	uint64_t temp = *first;
+	*first = *second;
+	*second = temp;
 
-	printf("AfterSwap - First: %lli, Second: %lli\n", *first, *second);
+	//printf("AfterSwap - First: %lli, Second: %lli\n", *first, *second);
 
 }
 

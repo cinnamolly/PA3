@@ -62,7 +62,7 @@ uint64_t kkAlg(uint64_t* a, int n) {
     // insert elements of array into heap
     for (int i = 0; i < n; i++) {
         insert(heap, a[i]);
-        //printf("Inserted value: %lli\n",a[i]);
+        printf("Inserted value: %lli\n",a[i]);
     }
 
     // While there is more than 1 element in the heap
