@@ -90,14 +90,14 @@ void maxHeapify(Heap* heap, int N) {
 
 // swap values in the heap (so much easier than PA1 omg)
 void swap(uint64_t* first, uint64_t* second){
-	printf("InSwap - First: %lli, Second: %lli\n", *first, *second);
+	//printf("InSwap - First: %lli, Second: %lli\n", *first, *second);
 
 	// create temp variable
-	uint64_t* temp = first;
-	first = second;
-	second = temp;
+	uint64_t temp = *first;
+	*first = *second;
+	*second = temp;
 
-	printf("AfterSwap - First: %lli, Second: %lli\n", *first, *second);
+	//printf("AfterSwap - First: %lli, Second: %lli\n", *first, *second);
 
 }
 

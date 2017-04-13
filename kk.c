@@ -100,6 +100,41 @@ void regenInput(char* filename, int n){
 	fclose(file);
 }
 
+uint64_t residue_RandomMove(uint64_t* a, int n)
+{
+	srand(time(NULL));
+	int r;
+	int group1Sum = 0;
+	int group2Sum = 0;
+	for(int x = 0; x < n; x++){
+		r = rand()%2;
+		if(r == 0){
+			group1 += &a[x];
+		}
+		else{
+			group2 += &a[x];
+		}
+	}
+	uint64_t resi = abs(group2 - group1);
+	return resi;
+}
+
+uint64_t residue_Prepartition(uint64_t* a, int n){
+	srand(time(NULL));
+	int r;
+	uint64_t* p = malloc(sizeof(uint64_t) * n);
+	uint64_t* a_prime = malloc(sizeof(uint64_t) * n);
+	for(int x = 0; x< n; x++){
+		r = rand()%n;
+		p[x] = r;
+	}
+	for(int y = 0; y < n; y++){
+		index = &p[y];
+		a_prime[index] = &a_prime[index] + a[y];
+	}
+	uint64_t resi = kkAlg(a_prime, n);
+	return resi;
+}
 
 
 
