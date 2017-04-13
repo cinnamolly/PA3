@@ -7,6 +7,8 @@
 #include "maxheap.h"
 
 uint64_t kkAlg(uint64_t* a, int n);
+uint64_t residue_RandomMove(uint64_t* a, int n);
+uint64_t residue_Prepartition(uint64_t* a, int n);
 void regenInput(char* filename, int n);
 
 
@@ -45,7 +47,12 @@ int main(int argc, char *argv[]){
 
 	uint64_t residue = kkAlg(a, n);
 	printf("Residue (KK Alg): %lli\n", residue);
-	// kk implementation: 
+	
+	uint64_t residue_random = residue_RandomMove(a, n);
+	printf("Residue (Random Move): %lli\n", residue_random);
+
+	uint64_t residue_pre = residue_Prepartition(a, n);
+	printf("Residue (Prepartition): %lli\n", residue_pre);
 
 	free(a);
 
@@ -104,15 +111,18 @@ uint64_t residue_RandomMove(uint64_t* a, int n)
 {
 	srand(time(NULL));
 	int r;
-	int group1Sum = 0;
-	int group2Sum = 0;
+	uint64_t group1 = 0;
+	uint64_t group2 = 0;
 	for(int x = 0; x < n; x++){
 		r = rand()%2;
+		//printf("Random: %d\n", r);
 		if(r == 0){
-			group1 += &a[x];
+			group1 += a[x];
+			//printf("A: %lli\n", a[x]);
 		}
 		else{
-			group2 += &a[x];
+			group2 += a[x];
+			//printf("B: %lli\n", a[x]);
 		}
 	}
 	uint64_t resi = abs(group2 - group1);
@@ -125,12 +135,19 @@ uint64_t residue_Prepartition(uint64_t* a, int n){
 	uint64_t* p = malloc(sizeof(uint64_t) * n);
 	uint64_t* a_prime = malloc(sizeof(uint64_t) * n);
 	for(int x = 0; x< n; x++){
+		a_prime[x] = 0;
+	}
+	printf("P:");
+	for(int x = 0; x< n; x++){
 		r = rand()%n;
 		p[x] = r;
+		printf("%lli, ", p[x]);
 	}
+	printf("A':");
 	for(int y = 0; y < n; y++){
-		index = &p[y];
-		a_prime[index] = &a_prime[index] + a[y];
+		uint64_t index = p[y];
+		a_prime[index] = a_prime[index] + a[y];
+		printf("%lli, ", a_prime[y]);
 	}
 	uint64_t resi = kkAlg(a_prime, n);
 	return resi;
