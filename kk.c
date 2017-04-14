@@ -7,9 +7,13 @@
 #include "maxheap.h"
 
 uint64_t kkAlg(uint64_t* a, int n);
+
 int* randSolution_RandomMove(uint64_t* a, int n);
+int* randNeighbor_RandomMove(int* soln, int n);
 uint64_t residue_RandomMove(int* soln, uint64_t* a, int n);
+
 uint64_t residue_Prepartition(uint64_t* a, int n);
+
 int* repeated_random(uint64_t* a, int n);
 void regenInput(char* filename, int n);
 
@@ -135,6 +139,22 @@ int* randSolution_RandomMove(uint64_t* a, int n)
 	return solution;
 }
 
+int* randNeighbor_RandomMove(int* soln, int n){
+	srand(time(NULL));
+	int r1 = rand()%n;
+	int r2 = rand()%n;
+	double prob = (double)rand()/RAND_MAX*2.0;
+	while(r1 == r2){
+		r1 = rand()%n;
+		r2 = rand()%n;
+	}
+	soln[r1] = -1*soln[r1];
+	if(prob >= .5){
+		soln[r2] = -1*soln[r2];
+	}
+	return soln;
+}
+
 uint64_t residue_RandomMove(int* soln, uint64_t* a, int n)
 {
 	uint64_t resi = 0;
@@ -187,6 +207,17 @@ int* repeated_random(uint64_t* a, int n){
 		}
 	}
 	return randomSolutionA;
+}
+
+int* hill_climbing(uint64_t* a, int n){
+	int* randomSolution = randSolution_RandomMove(a,n);
+	for(int x = 0; x < n; x++){
+		int* randomNeighbor = randNeighbor_RandomMove(randomSolution, n);
+		if (residue_RandomMove(randomNeighbor, a, n) < residue_RandomMove(randomSolution, a, n)){
+			randomSolution = randomNeighbor;
+		}
+	}
+	return randomSolution;
 }
 
 
