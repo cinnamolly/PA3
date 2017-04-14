@@ -14,10 +14,11 @@ uint64_t residue_RandomMove(int* soln, uint64_t* a, int n);
 
 int* randSolution_Prepartition(uint64_t* a, int n);
 uint64_t residue_Prepartition(int* p, uint64_t* a, int n);
-uint64_t* randNeighbor_Prepartition(uint64_t* p, int n);
+int* randNeighbor_Prepartition(uint64_t* p, int n);
 
-int* repeated_random(uint64_t* a, int n);
-int* hill_climbing(uint64_t* a, int n);
+//if flag = 0, random move; flag = 1, prepartition
+int* repeated_random(uint64_t* a, int n, int flag);
+int* hill_climbing(uint64_t* a, int n, int flag);
 
 void regenInput(char* filename, int n);
 
@@ -66,11 +67,11 @@ int main(int argc, char *argv[]){
 	uint64_t residue_pre = residue_Prepartition(randPrepartition, a, n);
 	printf("Residue (Prepartition): %lli\n", residue_pre);
 
-	int* random = repeated_random(a, n);
+	int* random = repeated_random(a, n, 0);
 	uint64_t residue_RandomMove_RepeatedRandom = residue_RandomMove(random, a, n);
 	printf("Residue (Random Move - Repeated Random): %lli\n", residue_RandomMove_RepeatedRandom);
 
-	int* hill = hill_climbing(a, n);
+	int* hill = hill_climbing(a, n, 0);
 	uint64_t residue_RandomMove_HillClimbing = residue_RandomMove(hill, a, n);
 	printf("Residue (Random Move - Hill Climbing): %lli\n", residue_RandomMove_HillClimbing);
 
@@ -191,8 +192,8 @@ uint64_t residue_RandomMove(int* soln, uint64_t* a, int n)
 	return abs(resi);
 }
 
-uint64_t* randNeighbor_Prepartition(uint64_t* p, int n){
-	uint64_t* solution = malloc(sizeof(uint64_t) * n);
+int* randNeighbor_Prepartition(uint64_t* p, int n){
+	int* solution = malloc(sizeof(int) * n);
 	for(int y = 0; y < n; y++){
 		solution[y] = p[y];
 	}
@@ -247,14 +248,31 @@ uint64_t residue_Prepartition(int* p, uint64_t* a, int n){
 	return resi;
 }
 
-int* repeated_random(uint64_t* a, int n){
+int* repeated_random(uint64_t* a, int n, int flag){
 	//printf("A\n");
-	int* randomSolutionA = randSolution_RandomMove(a,n);
+	int* randomSolutionA;
+	if(flag == 0){
+		randomSolutionA = randSolution_RandomMove(a,n);
+	}
+	else{
+		randomSolutionA = randSolution_Prepartition(a,n);
+	}
 	for(int x = 0; x < n; x++){
 		//printf("B\n");
-		int* randomSolutionB = randSolution_RandomMove(a,n);
-		uint64_t residueA = residue_RandomMove(randomSolutionA, a, n);
-		uint64_t residueB = residue_RandomMove(randomSolutionB, a, n);
+		int* randomSolutionB;
+		uint64_t residueA;
+		uint64_t residueB;
+		if(flag==0){
+			randomSolutionB = randSolution_RandomMove(a,n);
+			residueA = residue_RandomMove(randomSolutionA, a, n);
+			residueB = residue_RandomMove(randomSolutionB, a, n);
+		}
+		else{
+			randomSolutionB = randSolution_Prepartition(a,n);
+			residueA = residue_Prepartition(randomSolutionA, a, n);
+			residueB = residue_Prepartition(randomSolutionB, a, n);
+		}
+		
 		//printf("Resiude A: %lli\n", residueA);
 		//printf("Resiude B: %lli\n", residueB);
 		if (residueB < residueA){
@@ -264,10 +282,22 @@ int* repeated_random(uint64_t* a, int n){
 	return randomSolutionA;
 }
 
-int* hill_climbing(uint64_t* a, int n){
-	int* randomSolution = randSolution_RandomMove(a,n);
+int* hill_climbing(uint64_t* a, int n, int flag){
+	int* randomSolution;
+	if(flag == 0){
+		randomSolution = randSolution_RandomMove(a,n);
+	}
+	else{
+		randomSolution = randSolution_Prepartition(a,n);
+	}
 	for(int x = 0; x < n; x++){
-		int* randomNeighbor = randNeighbor_RandomMove(randomSolution, n);
+		int* randomNeighbor;
+		if(flag == 0){
+			randomNeighbor = randNeighbor_RandomMove(randomSolution, n);
+		}
+		else{
+			randomNeighbor = randNeighbor_Prepartition(randomSolution, n);
+		}
 		printf("printing neighbor\n");
 		for(int y = 0; y < n; y++){
 			printf("%d,", randomNeighbor[y]);
@@ -276,8 +306,16 @@ int* hill_climbing(uint64_t* a, int n){
 		for(int y = 0; y < n; y++){
 			printf("%d,", randomSolution[y]);
 		}
-		uint64_t residueA = residue_RandomMove(randomSolution, a, n);
-		uint64_t residueB = residue_RandomMove(randomNeighbor, a, n);
+		uint64_t residueA;
+		uint64_t residueB;
+		if(flag ==0){
+			residueA = residue_RandomMove(randomSolution, a, n);
+			residueB = residue_RandomMove(randomNeighbor, a, n);
+		}
+		else{
+			residueA = residue_Prepartition(randomSolution, a, n);
+			residueB = residue_Prepartition(randomNeighbor, a, n);
+		}
 		printf("Resiude A: %lli\n", residueA);
 		printf("Resiude B: %lli\n", residueB);
 		if (residueB < residueA){
