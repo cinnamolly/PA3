@@ -20,8 +20,15 @@ uint64_t extractMax(Heap* heap);
 void maxHeapify(Heap* heap, int N);
 void swap(uint64_t* first, uint64_t* second);
 void printHeap(Heap* heap);
+/*
 int leftChild(int i);
 int rightChild(int i);
 int parent(int i);
+*/
+
+int leftChild(Heap* heap, int i);
+int rightChild(Heap* heap, int i);
+int parent(Heap* heap, int i);
+
 int heapSize(Heap* heap);
 void heapFree(Heap* heap);
