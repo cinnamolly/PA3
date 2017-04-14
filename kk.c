@@ -7,8 +7,10 @@
 #include "maxheap.h"
 
 uint64_t kkAlg(uint64_t* a, int n);
-uint64_t residue_RandomMove(uint64_t* a, int n);
+int* randSolution_RandomMove(uint64_t* a, int n);
+uint64_t residue_RandomMove(int* soln, uint64_t* a, int n);
 uint64_t residue_Prepartition(uint64_t* a, int n);
+int* repeated_random(uint64_t* a, int n);
 void regenInput(char* filename, int n);
 
 
@@ -48,8 +50,10 @@ int main(int argc, char *argv[]){
 	uint64_t residue = kkAlg(a, n);
 	printf("Residue (KK Alg): %lli\n", residue);
 	
-	uint64_t residue_random = residue_RandomMove(a, n);
+	int* randSoln = randSolution_RandomMove(a,n);
+	uint64_t residue_random = residue_RandomMove(randSoln, a, n);
 	printf("Residue (Random Move): %lli\n", residue_random);
+
 
 	uint64_t residue_pre = residue_Prepartition(a, n);
 	printf("Residue (Prepartition): %lli\n", residue_pre);
@@ -107,35 +111,48 @@ void regenInput(char* filename, int n){
 	fclose(file);
 }
 
-uint64_t residue_RandomMove(uint64_t* a, int n)
+int* randSolution_RandomMove(uint64_t* a, int n)
 {
 	srand(time(NULL));
 	int r;
 	uint64_t group1 = 0;
 	uint64_t group2 = 0;
+	int* solution = malloc(sizeof(uint64_t) * n);
 	for(int x = 0; x < n; x++){
 		r = rand()%2;
 		//printf("Random: %d\n", r);
 		if(r == 0){
 			group1 += a[x];
+			solution[x] = 1;
 			//printf("A: %lli\n", a[x]);
 		}
 		else{
 			group2 += a[x];
+			solution[x] = -1;
 			//printf("B: %lli\n", a[x]);
 		}
 	}
-	uint64_t resi = abs(group2 - group1);
-	return resi;
+	return solution;
+}
+
+uint64_t residue_RandomMove(int* soln, uint64_t* a, int n)
+{
+	uint64_t resi = 0;
+	for(int y = 0; y<n; y++){
+		resi+= soln[y]*a[y];
+	}
+	return abs(resi);
 }
 
 uint64_t residue_Prepartition(uint64_t* a, int n){
 	srand(time(NULL));
 	int r;
+	uint64_t resi;
+	uint64_t* alt = malloc(sizeof(uint64_t) * n);
 	uint64_t* p = malloc(sizeof(uint64_t) * n);
-	uint64_t* a_prime = malloc(sizeof(uint64_t) * n);
 	for(int x = 0; x< n; x++){
-		a_prime[x] = 0;
+		alt[x] = 0;
+		p[x] = 0;
 	}
 	printf("P:");
 	for(int x = 0; x< n; x++){
@@ -143,14 +160,33 @@ uint64_t residue_Prepartition(uint64_t* a, int n){
 		p[x] = r;
 		printf("%lli, ", p[x]);
 	}
-	printf("A':");
+	printf("\nA':");
 	for(int y = 0; y < n; y++){
 		uint64_t index = p[y];
-		a_prime[index] = a_prime[index] + a[y];
-		printf("%lli, ", a_prime[y]);
+		uint64_t val = a[y];
+		alt[index] = alt[index] + val;
+		printf("%lli, ", alt[y]);
 	}
-	uint64_t resi = kkAlg(a_prime, n);
+	printf("\nA:");
+	for(int z = 0; z<n; z++){
+		printf("%lli, ", a[z]);
+	}
+	free(p);
+	// for some reason, generating HUGE numbers sometimes
+	resi = kkAlg(alt, n);
+	free(alt);
 	return resi;
+}
+
+int* repeated_random(uint64_t* a, int n){
+	int* randomSolutionA = randSolution_RandomMove(a,n);
+	for(int x = 0; x < n; x++){
+		int* randomSolutionB = randSolution_RandomMove(a,n);
+		if (residue_RandomMove(randomSolutionB, a, n) < residue_RandomMove(randomSolutionA, a, n)){
+			randomSolutionA = randomSolutionB;
+		}
+	}
+	return randomSolutionA;
 }
 
 
