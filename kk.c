@@ -91,8 +91,21 @@ int main(int argc, char *argv[]){
 	printf("Residue (Random Move - Simulated Annealing): %lli\n", residue_RandomMove_simanneal);
 
 	int* anneal2 = sim_annealing(a, n, 1);
-	uint64_t residue_RandomMove_simanneal = residue_Prepartition(anneal2, a, n);
-	printf("Residue (Prepartition- Simulated Annealing): %lli\n", residue_RandomMove_simanneal);
+	uint64_t residue_Prepartition_simanneal = residue_Prepartition(anneal2, a, n);
+	printf("Residue (Prepartition- Simulated Annealing): %lli\n", residue_Prepartition_simanneal);
+
+
+
+		printf("Residue (KK Alg): %lli\n", residue);
+		printf("Residue (Random Move): %lli\n", residue_random);
+		printf("Residue (Prepartition): %lli\n", residue_pre);
+		printf("Residue (Random Move - Repeated Random): %lli\n", residue_RandomMove_RepeatedRandom);
+		printf("Residue (Prepartition - Repeated Random): %lli\n", residue_Prepartition_RepeatedRandom);
+		printf("Residue (Random Move - Hill Climbing): %lli\n", residue_RandomMove_HillClimbing);
+		printf("Residue (Prepartition - Hill Climbing): %lli\n", residue_Prepartition_HillClimbing);
+		printf("Residue (Random Move - Simulated Annealing): %lli\n", residue_RandomMove_simanneal);
+		printf("Residue (Prepartition- Simulated Annealing): %lli\n", residue_Prepartition_simanneal);
+
 
 	free(a);
 
@@ -200,15 +213,13 @@ int* randNeighbor_RandomMove(int* input, int n){
 	return solution;
 }
 
-
-
 uint64_t residue_RandomMove(int* soln, uint64_t* a, int n)
 {
 	uint64_t resi = 0;
 	for(int y = 0; y<n; y++){
 		resi+= soln[y]*a[y];
 	}
-	return abs(resi);
+	return resi;
 }
 
 int* randNeighbor_Prepartition(int* p, int n){
@@ -241,6 +252,7 @@ int* randSolution_Prepartition(uint64_t* a, int n){
 		p[x] = r;
 		printf("%d, ", p[x]);
 	}
+	printf("\n");
 	return p;
 }
 
@@ -347,6 +359,7 @@ int* hill_climbing(uint64_t* a, int n, int flag){
 }
 
 int* sim_annealing(uint64_t* a, int n, int flag){
+	printf("SIMANNEALSIMANNEALSIMANNEALSIMANNEAL\n");
 	int* randomSolution;
 	if(flag == 0){
 		randomSolution = randSolution_RandomMove(a,n);
@@ -372,6 +385,7 @@ int* sim_annealing(uint64_t* a, int n, int flag){
 		for(int y = 0; y < n; y++){
 			printf("%d,", randomSolution[y]);
 		}
+		printf("\n");
 
 		uint64_t residueA;        // residue of solution
 		uint64_t residueB;        // residue of neighbor
@@ -390,11 +404,16 @@ int* sim_annealing(uint64_t* a, int n, int flag){
 		printf("Residue B Step1: %lli\n", residueB);
 		printf("Residue C Step1: %lli\n", residueB);
 
+		double maybe = (double)rand() / RAND_MAX;
 		if (residueB < residueA){
 			randomSolution = randomNeighbor;
+			printf("IFIFIFIFIFIFIFIFIFIFIFIFIFIFIFIF\n");
+
 		}
-		else if (((double)rand() / RAND_MAX) < (exp((-residueB-residueA)/T(x)))) {
+		else if ((maybe) < (exp((-residueB-residueA)/T(x)))) {
 			randomSolution = randomNeighbor;
+			printf("MAYBEMAYBEMAYBEMAYBEMAYBEMAYBE: %f\n", maybe);
+			printf("EXPEXPEXPEXPEXPEXPEXPEXPEXPEXP: %f\n", (exp((-residueB-residueA)/T(x))));
 		}
 		// get residues again in case anything changes
 		if(flag == 0){
@@ -407,6 +426,9 @@ int* sim_annealing(uint64_t* a, int n, int flag){
 			residueB = residue_Prepartition(randomNeighbor, a, n);
 			residueC = residue_Prepartition(iprvSolution, a, n);
 		}
+		printf("Residue A Step2: %lli\n", residueA);
+		printf("Residue B Step2: %lli\n", residueB);
+		printf("Residue C Step2: %lli\n", residueB);
 
 		if (residueC < residueA){
 			iprvSolution = randomNeighbor;
