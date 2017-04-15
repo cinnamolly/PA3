@@ -27,88 +27,103 @@ void regenInput(char* filename, int n);
 
 
 int main(int argc, char *argv[]){
+	for(int w = 0; w<100; w++)
+	{
+		if (argc != 2){
+			printf("Input Argument: ./kk inputfile");
+		}
+		
+		int n = 5; // global for # of numbers in array 
 
-	if (argc != 2){
-		printf("Input Argument: ./kk inputfile");
+		//regenInput(argv[1], n);  //toggle to rewrite file
+
+		uint64_t* a = malloc(sizeof(uint64_t) * n); 	// array with numbers 
+
+		// Read File 
+		FILE *readfile = fopen(argv[1], "r");
+
+		if (readfile == NULL) {
+			printf("Read error\n");
+			return 0;
+		}
+
+		for (int i = 0; i < n; i++){
+			fscanf(readfile, "%lli", &a[i]);
+		}
+
+		fclose(readfile);
+
+		struct timeval progtime[10];
+		gettimeofday(&progtime[0], NULL);
+		uint64_t residue = kkAlg(a, n);
+		printf("Residue (KK Alg): %lli\n", residue);
+		
+		for(int y = 0; y<25000; y++)
+		{
+			gettimeofday(&progtime[1], NULL);
+			int* randSoln = randSolution_RandomMove(a,n);
+			uint64_t residue_random = residue_RandomMove(randSoln, a, n);
+			printf("Residue (Random Move): %lli\n", residue_random);
+		}
+		for(int y = 0; y<25000; y++)
+		{
+			gettimeofday(&progtime[2], NULL);
+			int* randPrepartition = randSolution_Prepartition(a,n);
+			uint64_t residue_pre = residue_Prepartition(randPrepartition, a, n);
+			printf("Residue (Prepartition): %lli\n", residue_pre);
+		}
+		for(int y = 0; y<25000; y++)
+		{
+			gettimeofday(&progtime[3], NULL);
+			int* random = repeated_random(a, n, 0);
+			uint64_t residue_RandomMove_RepeatedRandom = residue_RandomMove(random, a, n);
+			printf("Residue (Random Move - Repeated Random): %lli\n", residue_RandomMove_RepeatedRandom);
+		}
+		for(int y = 0; y<25000; y++)
+		{
+			gettimeofday(&progtime[4], NULL);
+			int* random2 = repeated_random(a, n, 1);
+			uint64_t residue_Prepartition_RepeatedRandom = residue_Prepartition(random2, a, n);
+			printf("Residue (Prepartition - Repeated Random): %lli\n", residue_Prepartition_RepeatedRandom);
+		}
+
+		for(int y = 0; y<25000; y++)
+		{
+			gettimeofday(&progtime[5], NULL);
+			int* hill = hill_climbing(a, n, 0);
+			uint64_t residue_RandomMove_HillClimbing = residue_RandomMove(hill, a, n);
+			printf("Residue (Random Move - Hill Climbing): %lli\n", residue_RandomMove_HillClimbing);
+		}
+		for(int y = 0; y<25000; y++){
+			gettimeofday(&progtime[6], NULL);
+			int* hill2 = hill_climbing(a, n, 1);
+			uint64_t residue_Prepartition_HillClimbing = residue_Prepartition(hill2, a, n);
+			printf("Residue (Prepartition - Hill Climbing): %lli\n", residue_Prepartition_HillClimbing);
+		}
+		for(int y = 0; y<25000; y++){
+			gettimeofday(&progtime[7], NULL);
+			int* anneal1 = sim_annealing(a, n, 0);
+			uint64_t residue_RandomMove_simanneal = residue_RandomMove(anneal1, a, n);
+			printf("Residue (Random Move - Simulated Annealing): %lli\n", residue_RandomMove_simanneal);
+		}
+		for(int y = 0; y<25000; y++){
+			gettimeofday(&progtime[8], NULL);
+			int* anneal2 = sim_annealing(a, n, 1);
+			uint64_t residue_Prepartition_simanneal = residue_Prepartition(anneal2, a, n);
+			printf("Residue (Prepartition- Simulated Annealing): %lli\n", residue_Prepartition_simanneal);
+		}	
+		gettimeofday(&progtime[9], NULL);
+
+		double runtimes[9];
+		for (int i = 0; i < 9; i++){
+			runtimes[i] = (double)((progtime[i+1].tv_sec - progtime[i].tv_sec) * 1000000)
+				+ (progtime[i+1].tv_usec - progtime[i].tv_usec);
+			printf("Runtime: %f ", runtimes[i]);
+		}
+		free(a);
 	}
-	
-	int n = 5; // global for # of numbers in array 
-
-	//regenInput(argv[1], n);  //toggle to rewrite file
-
-	uint64_t* a = malloc(sizeof(uint64_t) * n); 	// array with numbers 
-
-	// Read File 
-	FILE *readfile = fopen(argv[1], "r");
-
-	if (readfile == NULL) {
-		printf("Read error\n");
-		return 0;
-	}
-
-	for (int i = 0; i < n; i++){
-		fscanf(readfile, "%lli", &a[i]);
-	}
-
-	fclose(readfile);
-
-	struct timeval progtime[10];
-	gettimeofday(&progtime[0], NULL);
-	uint64_t residue = kkAlg(a, n);
-	printf("Residue (KK Alg): %lli\n", residue);
-	
-	gettimeofday(&progtime[1], NULL);
-	int* randSoln = randSolution_RandomMove(a,n);
-	uint64_t residue_random = residue_RandomMove(randSoln, a, n);
-	printf("Residue (Random Move): %lli\n", residue_random);
-
-	gettimeofday(&progtime[2], NULL);
-	int* randPrepartition = randSolution_Prepartition(a,n);
-	uint64_t residue_pre = residue_Prepartition(randPrepartition, a, n);
-	printf("Residue (Prepartition): %lli\n", residue_pre);
-
-	gettimeofday(&progtime[3], NULL);
-	int* random = repeated_random(a, n, 0);
-	uint64_t residue_RandomMove_RepeatedRandom = residue_RandomMove(random, a, n);
-	printf("Residue (Random Move - Repeated Random): %lli\n", residue_RandomMove_RepeatedRandom);
-
-	gettimeofday(&progtime[4], NULL);
-	int* random2 = repeated_random(a, n, 1);
-	uint64_t residue_Prepartition_RepeatedRandom = residue_Prepartition(random2, a, n);
-	printf("Residue (Prepartition - Repeated Random): %lli\n", residue_Prepartition_RepeatedRandom);
-
-	gettimeofday(&progtime[5], NULL);
-	int* hill = hill_climbing(a, n, 0);
-	uint64_t residue_RandomMove_HillClimbing = residue_RandomMove(hill, a, n);
-	printf("Residue (Random Move - Hill Climbing): %lli\n", residue_RandomMove_HillClimbing);
-
-	gettimeofday(&progtime[6], NULL);
-	int* hill2 = hill_climbing(a, n, 1);
-	uint64_t residue_Prepartition_HillClimbing = residue_Prepartition(hill2, a, n);
-	printf("Residue (Prepartition - Hill Climbing): %lli\n", residue_Prepartition_HillClimbing);
-
-	gettimeofday(&progtime[7], NULL);
-	int* anneal1 = sim_annealing(a, n, 0);
-	uint64_t residue_RandomMove_simanneal = residue_RandomMove(anneal1, a, n);
-	printf("Residue (Random Move - Simulated Annealing): %lli\n", residue_RandomMove_simanneal);
-
-	gettimeofday(&progtime[8], NULL);
-	int* anneal2 = sim_annealing(a, n, 1);
-	uint64_t residue_Prepartition_simanneal = residue_Prepartition(anneal2, a, n);
-	printf("Residue (Prepartition- Simulated Annealing): %lli\n", residue_Prepartition_simanneal);
-
-	gettimeofday(&progtime[9], NULL);
-
-	double runtimes[9];
-	for (int i = 0; i < 9; i++){
-		runtimes[i] = (double)((progtime[i+1].tv_sec - progtime[i].tv_sec) * 1000000)
-			+ (progtime[i+1].tv_usec - progtime[i].tv_usec);
-		printf("Runtime: %f ", runtimes[i]);
-	}
-
 	//write the time to a text file 
 
-	free(a);
 
 	return 0;
 }
