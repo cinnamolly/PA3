@@ -219,7 +219,7 @@ uint64_t residue_RandomMove(int* soln, uint64_t* a, int n)
 	for(int y = 0; y<n; y++){
 		resi+= soln[y]*a[y];
 	}
-	return resi;
+	return abs(resi);
 }
 
 int* randNeighbor_Prepartition(int* p, int n){
@@ -276,7 +276,7 @@ uint64_t residue_Prepartition(int* p, uint64_t* a, int n){
 	}
 	printf("\n");*/
 	uint64_t resi = kkAlg(alt, n);
-	return resi;
+	return abs(resi);
 }
 
 int* repeated_random(uint64_t* a, int n, int flag){
@@ -369,6 +369,16 @@ int* sim_annealing(uint64_t* a, int n, int flag){
 	}
 	int* iprvSolution = randomSolution; // S'' = S
 
+		printf("\nprinting soln\n");
+		for(int y = 0; y < n; y++){
+			printf("%d,", randomSolution[y]);
+		}
+		printf("\nprinting improved soln\n");
+		for(int y = 0; y < n; y++){
+			printf("%d,", iprvSolution[y]);
+		}
+		printf("\n");
+
 	for(int x = 0; x < n; x++){
 		int* randomNeighbor;   // S
 		if(flag == 0){
@@ -384,6 +394,10 @@ int* sim_annealing(uint64_t* a, int n, int flag){
 		printf("\nprinting soln\n");
 		for(int y = 0; y < n; y++){
 			printf("%d,", randomSolution[y]);
+		}
+		printf("\nprinting improved soln\n");
+		for(int y = 0; y < n; y++){
+			printf("%d,", iprvSolution[y]);
 		}
 		printf("\n");
 
@@ -408,7 +422,6 @@ int* sim_annealing(uint64_t* a, int n, int flag){
 		if (residueB < residueA){
 			randomSolution = randomNeighbor;
 			printf("IFIFIFIFIFIFIFIFIFIFIFIFIFIFIFIF\n");
-
 		}
 		else if ((maybe) < (exp((-residueB-residueA)/T(x)))) {
 			randomSolution = randomNeighbor;
@@ -431,21 +444,18 @@ int* sim_annealing(uint64_t* a, int n, int flag){
 		printf("Residue C Step2: %lli\n", residueB);
 
 		if (residueC < residueA){
-			iprvSolution = randomNeighbor;
+			iprvSolution = randomSolution;
 		}
 	}
 	return iprvSolution;
 }
 
-// cooling schedule: Exp Multiplicative Cooling T_k = a^k * T_0
-// Proposed by Kirkpatrick, Gelatt, and Vecchi (1983)
-//http://what-when-how.com/artificial-intelligence/a-comparison-of-cooling-schedules-for-simulated-annealing-artificial-intelligence/
 double T(int k){
 	//k representes the iterations, which are passed in
 	// High initial value for high initial acceptability
-	double T_init = pow(10, 7);
-	double a = 0.95;
-	return pow(a,k)*T_init;
+	double T_init = pow(10, 10);
+	double a = 0.8;
+	return pow(a,k/300)*T_init;
 }
 
 
