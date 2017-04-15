@@ -53,11 +53,11 @@ void insert(Heap* heap, uint64_t a){
 		index = parent(heap, index);
 	}
 
-	printf("Heap Array Ins (After Swap): ");
+	/*printf("Heap Array Ins (After Swap): ");
 	for (int i = 0; i < (heap->heapCount); i++){
 		printf("%lli ", heap->heapArray[i]);
 	}
-	printf("\n");
+	printf("\n");*/
 }
 
 // Pop max off the heap
@@ -73,7 +73,7 @@ uint64_t extractMax(Heap* heap) {
 
 	maxHeapify(heap, 0);
 
-	printf("Popped Value: %lli\n", max_val);
+	//printf("Popped Value: %lli\n", max_val);
 
 	return max_val;
 }

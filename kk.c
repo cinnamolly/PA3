@@ -13,8 +13,8 @@ int* randNeighbor_RandomMove(int* soln, int n);
 uint64_t residue_RandomMove(int* soln, uint64_t* a, int n);
 
 int* randSolution_Prepartition(uint64_t* a, int n);
+int* randNeighbor_Prepartition(int* p, int n);
 uint64_t residue_Prepartition(int* p, uint64_t* a, int n);
-int* randNeighbor_Prepartition(uint64_t* p, int n);
 
 //if flag = 0, random move; flag = 1, prepartition
 int* repeated_random(uint64_t* a, int n, int flag);
@@ -71,9 +71,17 @@ int main(int argc, char *argv[]){
 	uint64_t residue_RandomMove_RepeatedRandom = residue_RandomMove(random, a, n);
 	printf("Residue (Random Move - Repeated Random): %lli\n", residue_RandomMove_RepeatedRandom);
 
+	int* random2 = repeated_random(a, n, 1);
+	uint64_t residue_Prepartition_RepeatedRandom = residue_Prepartition(random2, a, n);
+	printf("Residue (Prepartition - Repeated Random): %lli\n", residue_Prepartition_RepeatedRandom);
+
 	int* hill = hill_climbing(a, n, 0);
 	uint64_t residue_RandomMove_HillClimbing = residue_RandomMove(hill, a, n);
 	printf("Residue (Random Move - Hill Climbing): %lli\n", residue_RandomMove_HillClimbing);
+
+	int* hill2 = hill_climbing(a, n, 1);
+	uint64_t residue_Prepartition_HillClimbing = residue_Prepartition(hill2, a, n);
+	printf("Residue (Prepartition - Hill Climbing): %lli\n", residue_Prepartition_HillClimbing);
 
 	free(a);
 
@@ -90,15 +98,15 @@ uint64_t kkAlg(uint64_t* a, int n) {
     // insert elements of array into heap
     for (int i = 0; i < n; i++) {
         insert(heap, a[i]);
-        printf("Inserted value: %lli\n",a[i]);
+        //printf("Inserted value: %lli\n",a[i]);
     }
 
     // While there is more than 1 element in the heap
     while (heapSize(heap) > 1) {
     	uint64_t grea = extractMax(heap);
     	uint64_t less = extractMax(heap);
-    	printf("Greater: %lli\n", grea);
-    	printf("Lesser: %lli\n", less);
+    	//printf("Greater: %lli\n", grea);
+    	//printf("Lesser: %lli\n", less);
         insert(heap, grea - less);
 
         //insert(heap, extractMax(heap) - extractMax(heap));
@@ -192,7 +200,8 @@ uint64_t residue_RandomMove(int* soln, uint64_t* a, int n)
 	return abs(resi);
 }
 
-int* randNeighbor_Prepartition(uint64_t* p, int n){
+int* randNeighbor_Prepartition(int* p, int n){
+	//srand(time(NULL));
 	int* solution = malloc(sizeof(int) * n);
 	for(int y = 0; y < n; y++){
 		solution[y] = p[y];
@@ -270,7 +279,9 @@ int* repeated_random(uint64_t* a, int n, int flag){
 		else{
 			randomSolutionB = randSolution_Prepartition(a,n);
 			residueA = residue_Prepartition(randomSolutionA, a, n);
+			printf("Resiude A: %lli", residueA);
 			residueB = residue_Prepartition(randomSolutionB, a, n);
+			printf("Resiude B: %lli", residueB);
 		}
 		
 		//printf("Resiude A: %lli\n", residueA);
