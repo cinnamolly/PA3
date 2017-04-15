@@ -35,7 +35,7 @@ int main(int argc, char *argv[]){
 		
 		int n = 5; // global for # of numbers in array 
 
-		//regenInput(argv[1], n);  //toggle to rewrite file
+		regenInput(argv[1], n);  //toggle to rewrite file
 
 		uint64_t* a = malloc(sizeof(uint64_t) * n); 	// array with numbers 
 
@@ -64,49 +64,37 @@ int main(int argc, char *argv[]){
 			int* randSoln = randSolution_RandomMove(a,n);
 			uint64_t residue_random = residue_RandomMove(randSoln, a, n);
 			printf("Residue (Random Move): %lli\n", residue_random);
-		}
-		for(int y = 0; y<25000; y++)
-		{
+
 			gettimeofday(&progtime[2], NULL);
 			int* randPrepartition = randSolution_Prepartition(a,n);
 			uint64_t residue_pre = residue_Prepartition(randPrepartition, a, n);
 			printf("Residue (Prepartition): %lli\n", residue_pre);
-		}
-		for(int y = 0; y<25000; y++)
-		{
+
 			gettimeofday(&progtime[3], NULL);
 			int* random = repeated_random(a, n, 0);
 			uint64_t residue_RandomMove_RepeatedRandom = residue_RandomMove(random, a, n);
 			printf("Residue (Random Move - Repeated Random): %lli\n", residue_RandomMove_RepeatedRandom);
-		}
-		for(int y = 0; y<25000; y++)
-		{
+
 			gettimeofday(&progtime[4], NULL);
 			int* random2 = repeated_random(a, n, 1);
 			uint64_t residue_Prepartition_RepeatedRandom = residue_Prepartition(random2, a, n);
 			printf("Residue (Prepartition - Repeated Random): %lli\n", residue_Prepartition_RepeatedRandom);
-		}
 
-		for(int y = 0; y<25000; y++)
-		{
 			gettimeofday(&progtime[5], NULL);
 			int* hill = hill_climbing(a, n, 0);
 			uint64_t residue_RandomMove_HillClimbing = residue_RandomMove(hill, a, n);
 			printf("Residue (Random Move - Hill Climbing): %lli\n", residue_RandomMove_HillClimbing);
-		}
-		for(int y = 0; y<25000; y++){
+
 			gettimeofday(&progtime[6], NULL);
 			int* hill2 = hill_climbing(a, n, 1);
 			uint64_t residue_Prepartition_HillClimbing = residue_Prepartition(hill2, a, n);
 			printf("Residue (Prepartition - Hill Climbing): %lli\n", residue_Prepartition_HillClimbing);
-		}
-		for(int y = 0; y<25000; y++){
+
 			gettimeofday(&progtime[7], NULL);
 			int* anneal1 = sim_annealing(a, n, 0);
 			uint64_t residue_RandomMove_simanneal = residue_RandomMove(anneal1, a, n);
 			printf("Residue (Random Move - Simulated Annealing): %lli\n", residue_RandomMove_simanneal);
-		}
-		for(int y = 0; y<25000; y++){
+
 			gettimeofday(&progtime[8], NULL);
 			int* anneal2 = sim_annealing(a, n, 1);
 			uint64_t residue_Prepartition_simanneal = residue_Prepartition(anneal2, a, n);
