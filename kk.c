@@ -103,7 +103,7 @@ int main(int argc, char *argv[]){
 			gettimeofday(&progtime[2], NULL);
 			int* randSoln = randSolution_RandomMove(a,n);
 			uint64_t residue_random = residue_RandomMove(randSoln, a, n);
-			printf("Residue (Random Move): %lli\n", residue_random);
+			//printf("Residue (Random Move): %lli\n", residue_random);
 			gettimeofday(&progtime[3], NULL);
 			resd_RM[i] = residue_random; 
 			time_RM[i] = (double)((progtime[3].tv_sec - progtime[2].tv_sec) * 1000000)
@@ -114,11 +114,11 @@ int main(int argc, char *argv[]){
 			gettimeofday(&progtime[4], NULL);
 			int* randPrepartition = randSolution_Prepartition(a,n);
 			uint64_t residue_pre = residue_Prepartition(randPrepartition, a, n);
-			printf("Residue (Prepartition): %lli\n", residue_pre);
+			//printf("Residue (Prepartition): %lli\n", residue_pre);
 			gettimeofday(&progtime[5], NULL);
 			resd_PP[i] = residue_pre;
 			time_PP[i] = (double)((progtime[5].tv_sec - progtime[4].tv_sec) * 1000000)
-				+ (progtime[i+1].tv_usec - progtime[i].tv_usec);
+				+ (progtime[5].tv_usec - progtime[4].tv_usec);
 		}
 		
 		for(int i = 0; i < iterations; i++)
@@ -126,7 +126,7 @@ int main(int argc, char *argv[]){
 			gettimeofday(&progtime[5], NULL);
 			int* random = repeated_random(a, n, 0);
 			uint64_t residue_RandomMove_RepeatedRandom = residue_RandomMove(random, a, n);
-			printf("Residue (Random Move - Repeated Random): %lli\n", residue_RandomMove_RepeatedRandom);
+			//printf("Residue (Random Move - Repeated Random): %lli\n", residue_RandomMove_RepeatedRandom);
 			gettimeofday(&progtime[6], NULL);
 			resd_repeatRand_RM[i] = residue_RandomMove_RepeatedRandom;
 			time_repeatRand_RM[i] = (double)((progtime[6].tv_sec - progtime[5].tv_sec) * 1000000)
@@ -137,7 +137,7 @@ int main(int argc, char *argv[]){
 			gettimeofday(&progtime[7], NULL);
 			int* random2 = repeated_random(a, n, 1);
 			uint64_t residue_Prepartition_RepeatedRandom = residue_Prepartition(random2, a, n);
-			printf("Residue (Prepartition - Repeated Random): %lli\n", residue_Prepartition_RepeatedRandom);
+			//printf("Residue (Prepartition - Repeated Random): %lli\n", residue_Prepartition_RepeatedRandom);
 			gettimeofday(&progtime[8], NULL);
 			resd_repeatRand_PP[i] = residue_Prepartition_RepeatedRandom;
 			time_repeatRand_PP[i] = (double)((progtime[8].tv_sec - progtime[7].tv_sec) * 1000000)
@@ -149,7 +149,7 @@ int main(int argc, char *argv[]){
 			gettimeofday(&progtime[9], NULL);
 			int* hill = hill_climbing(a, n, 0);
 			uint64_t residue_RandomMove_HillClimbing = residue_RandomMove(hill, a, n);
-			printf("Residue (Random Move - Hill Climbing): %lli\n", residue_RandomMove_HillClimbing);
+			//printf("Residue (Random Move - Hill Climbing): %lli\n", residue_RandomMove_HillClimbing);
 			gettimeofday(&progtime[10], NULL);
 			resd_hill_RM[i] = residue_RandomMove_HillClimbing;
 			time_hill_RM[i] = (double)((progtime[10].tv_sec - progtime[9].tv_sec) * 1000000)
@@ -159,7 +159,7 @@ int main(int argc, char *argv[]){
 			gettimeofday(&progtime[11], NULL);
 			int* hill2 = hill_climbing(a, n, 1);
 			uint64_t residue_Prepartition_HillClimbing = residue_Prepartition(hill2, a, n);
-			printf("Residue (Prepartition - Hill Climbing): %lli\n", residue_Prepartition_HillClimbing);
+			//printf("Residue (Prepartition - Hill Climbing): %lli\n", residue_Prepartition_HillClimbing);
 			gettimeofday(&progtime[12], NULL);
 			resd_hill_PP[i] = residue_Prepartition_HillClimbing;
 			time_hill_PP[i] = (double)((progtime[12].tv_sec - progtime[11].tv_sec) * 1000000)
@@ -170,7 +170,7 @@ int main(int argc, char *argv[]){
 			gettimeofday(&progtime[13], NULL);
 			int* anneal1 = sim_annealing(a, n, 0);
 			uint64_t residue_RandomMove_simanneal = residue_RandomMove(anneal1, a, n);
-			printf("Residue (Random Move - Simulated Annealing): %lli\n", residue_RandomMove_simanneal);
+			//printf("Residue (Random Move - Simulated Annealing): %lli\n", residue_RandomMove_simanneal);
 			gettimeofday(&progtime[14], NULL);
 			resd_sim_RM[i] = residue_RandomMove_simanneal;
 			time_sim_RM[i] = (double)((progtime[14].tv_sec - progtime[13].tv_sec) * 1000000)
@@ -180,7 +180,7 @@ int main(int argc, char *argv[]){
 			gettimeofday(&progtime[15], NULL);
 			int* anneal2 = sim_annealing(a, n, 1);
 			uint64_t residue_Prepartition_simanneal = residue_Prepartition(anneal2, a, n);
-			printf("Residue (Prepartition- Simulated Annealing): %lli\n", residue_Prepartition_simanneal);
+			//printf("Residue (Prepartition- Simulated Annealing): %lli\n", residue_Prepartition_simanneal);
 			gettimeofday(&progtime[16], NULL);
 			resd_sim_PP[i] = residue_Prepartition_simanneal;
 			time_sim_PP[i] = (double)((progtime[16].tv_sec - progtime[15].tv_sec) * 1000000)
