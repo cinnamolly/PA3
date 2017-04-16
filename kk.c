@@ -80,11 +80,14 @@ int main(int argc, char *argv[]){
 	    
 	    fclose(f0);
 		
-		int iterations = 25;
+		int iterations = 25000;
+		
 		uint64_t resd_RM[iterations];
 		double time_RM[iterations];
+		
 		uint64_t resd_PP[iterations];
 		double time_PP[iterations];
+			
 		uint64_t resd_repeatRand_RM[iterations];
 		double time_repeatRand_RM[iterations];
 		uint64_t resd_repeatRand_PP[iterations];
@@ -97,7 +100,7 @@ int main(int argc, char *argv[]){
 		double time_sim_RM[iterations];
 		uint64_t resd_sim_PP[iterations];
 		double time_sim_PP[iterations];
-
+		
 		printf("residue 1\n");
 		for(int i = 0; i < iterations; i++)
 		{
@@ -127,6 +130,7 @@ int main(int argc, char *argv[]){
 		}
 		
 		printf("residue 3\n");
+		
 		for(int i = 0; i < iterations; i++)
 		{
 			gettimeofday(&progtime[5], NULL);
@@ -207,6 +211,7 @@ int main(int argc, char *argv[]){
 			free(anneal2);
 		}
 		
+		
 	    FILE* f = fopen("residues.csv", "a");
 	    if (f == NULL) {
 	        printf("Error opening file\n");
@@ -230,6 +235,8 @@ int main(int argc, char *argv[]){
 		}
 
 	    fclose(f2);
+	    */
+	    
 		free(a);
 	}
 
@@ -376,6 +383,7 @@ uint64_t residue_Prepartition(int* p, uint64_t* a, int n){
 		alt[index] = alt[index] + val;
 	}
 	uint64_t resi = kkAlg(alt, n);
+	free(alt);
 	return abs(resi);
 }
 
@@ -408,6 +416,7 @@ int* repeated_random(uint64_t* a, int n, int flag){
 			randomSolutionA = randomSolutionB;
 		}
 	}
+	free(randomSolutionB);
 	return randomSolutionA;
 }
 
@@ -442,6 +451,7 @@ int* hill_climbing(uint64_t* a, int n, int flag){
 			randomSolution = randomNeighbor;
 		}
 	}
+	free(randomNeighbor);
 	return randomSolution;
 }
 
@@ -503,6 +513,8 @@ int* sim_annealing(uint64_t* a, int n, int flag){
 			iprvSolution = randomSolution;
 		}
 	}
+	free(randomSolution);
+	free(randomNeighbor);
 	return iprvSolution;
 }
 
