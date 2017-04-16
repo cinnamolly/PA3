@@ -37,7 +37,7 @@ int main(int argc, char *argv[]){
 	fclose(f2);
 
 	// 100 iterations
-	for(int w = 0; w < 10; w++)
+	for(int w = 0; w < 15; w++)
 	{
 		if (argc != 2){
 			printf("Input Argument: ./kk inputfile");
@@ -98,6 +98,7 @@ int main(int argc, char *argv[]){
 		uint64_t resd_sim_PP[iterations];
 		double time_sim_PP[iterations];
 
+		printf("residue 1\n");
 		for(int i = 0; i < iterations; i++)
 		{
 			gettimeofday(&progtime[2], NULL);
@@ -108,7 +109,10 @@ int main(int argc, char *argv[]){
 			resd_RM[i] = residue_random; 
 			time_RM[i] = (double)((progtime[3].tv_sec - progtime[2].tv_sec) * 1000000)
 				+ (progtime[3].tv_usec - progtime[2].tv_usec);
+			free(randSoln);
 		}
+		
+		printf("residue 2\n");
 		for(int i = 0; i < iterations; i++)
 		{
 			gettimeofday(&progtime[4], NULL);
@@ -119,8 +123,10 @@ int main(int argc, char *argv[]){
 			resd_PP[i] = residue_pre;
 			time_PP[i] = (double)((progtime[5].tv_sec - progtime[4].tv_sec) * 1000000)
 				+ (progtime[5].tv_usec - progtime[4].tv_usec);
+			free(randPrepartition);
 		}
 		
+		printf("residue 3\n");
 		for(int i = 0; i < iterations; i++)
 		{
 			gettimeofday(&progtime[5], NULL);
@@ -131,7 +137,10 @@ int main(int argc, char *argv[]){
 			resd_repeatRand_RM[i] = residue_RandomMove_RepeatedRandom;
 			time_repeatRand_RM[i] = (double)((progtime[6].tv_sec - progtime[5].tv_sec) * 1000000)
 				+ (progtime[6].tv_usec - progtime[5].tv_usec);
+			free(random);
 		}
+		
+		printf("residue 4\n");
 		for(int i = 0; i < iterations; i++)
 		{
 			gettimeofday(&progtime[7], NULL);
@@ -142,8 +151,10 @@ int main(int argc, char *argv[]){
 			resd_repeatRand_PP[i] = residue_Prepartition_RepeatedRandom;
 			time_repeatRand_PP[i] = (double)((progtime[8].tv_sec - progtime[7].tv_sec) * 1000000)
 				+ (progtime[8].tv_usec - progtime[7].tv_usec);
+			free(random2);
 		}
 		
+		printf("residue 5\n");
 		for(int i = 0; i < iterations; i++)
 		{
 			gettimeofday(&progtime[9], NULL);
@@ -154,7 +165,10 @@ int main(int argc, char *argv[]){
 			resd_hill_RM[i] = residue_RandomMove_HillClimbing;
 			time_hill_RM[i] = (double)((progtime[10].tv_sec - progtime[9].tv_sec) * 1000000)
 				+ (progtime[10].tv_usec - progtime[9].tv_usec);
+			free(hill);
 		}
+		
+		printf("residue 6\n");
 		for(int i = 0; i < iterations; i++){
 			gettimeofday(&progtime[11], NULL);
 			int* hill2 = hill_climbing(a, n, 1);
@@ -164,8 +178,10 @@ int main(int argc, char *argv[]){
 			resd_hill_PP[i] = residue_Prepartition_HillClimbing;
 			time_hill_PP[i] = (double)((progtime[12].tv_sec - progtime[11].tv_sec) * 1000000)
 				+ (progtime[12].tv_usec - progtime[11].tv_usec);
+			free(hill2);
 		}
 		
+		printf("residue 7\n");
 		for(int i = 0; i < iterations; i++){
 			gettimeofday(&progtime[13], NULL);
 			int* anneal1 = sim_annealing(a, n, 0);
@@ -175,7 +191,10 @@ int main(int argc, char *argv[]){
 			resd_sim_RM[i] = residue_RandomMove_simanneal;
 			time_sim_RM[i] = (double)((progtime[14].tv_sec - progtime[13].tv_sec) * 1000000)
 				+ (progtime[14].tv_usec - progtime[13].tv_usec);
+			free(anneal1);
 		}
+		
+		printf("residue 8\n");
 		for(int i = 0; i < iterations; i++){
 			gettimeofday(&progtime[15], NULL);
 			int* anneal2 = sim_annealing(a, n, 1);
@@ -185,8 +204,8 @@ int main(int argc, char *argv[]){
 			resd_sim_PP[i] = residue_Prepartition_simanneal;
 			time_sim_PP[i] = (double)((progtime[16].tv_sec - progtime[15].tv_sec) * 1000000)
 				+ (progtime[16].tv_usec - progtime[15].tv_usec);
+			free(anneal2);
 		}
-
 		
 	    FILE* f = fopen("residues.csv", "a");
 	    if (f == NULL) {
