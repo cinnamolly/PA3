@@ -37,7 +37,7 @@ int main(int argc, char *argv[]){
 	fclose(f2);
 
 	// 100 iterations
-	for(int w = 0; w < 15; w++)
+	for(int w = 0; w < 1; w++)
 	{
 		if (argc != 2){
 			printf("Input Argument: ./kk inputfile");
@@ -128,6 +128,7 @@ int main(int argc, char *argv[]){
 				+ (progtime[5].tv_usec - progtime[4].tv_usec);
 			free(randPrepartition);
 		}
+		
 		
 		printf("residue 3\n");
 		
@@ -233,9 +234,8 @@ int main(int argc, char *argv[]){
 	    		time_repeatRand_RM[i], time_repeatRand_PP[i], time_hill_RM[i], 
 	    		time_hill_PP[i], time_sim_RM[i], time_sim_PP[i]);
 		}
-
+		
 	    fclose(f2);
-	    */
 	    
 		free(a);
 	}
@@ -413,10 +413,11 @@ int* repeated_random(uint64_t* a, int n, int flag){
 		}
 		
 		if (residueB < residueA){
-			randomSolutionA = randomSolutionB;
+			memcpy(randomSolutionA, randomSolutionB, sizeof(int) * n);
+			//randomSolutionA = randomSolutionB;
 		}
+		free(randomSolutionB);
 	}
-	free(randomSolutionB);
 	return randomSolutionA;
 }
 
@@ -448,10 +449,11 @@ int* hill_climbing(uint64_t* a, int n, int flag){
 		}
 
 		if (residueB < residueA){
-			randomSolution = randomNeighbor;
+			//randomSolution = randomNeighbor;
+			memcpy(randomSolution, randomNeighbor, sizeof(int) * n);
 		}
+		free(randomNeighbor);
 	}
-	free(randomNeighbor);
 	return randomSolution;
 }
 
@@ -492,10 +494,12 @@ int* sim_annealing(uint64_t* a, int n, int flag){
 		double maybe = (double)rand() / RAND_MAX;
 
 		if (residueB < residueA){
-			randomSolution = randomNeighbor;
+			//randomSolution = randomNeighbor;
+			memcpy(randomSolution, randomNeighbor, sizeof(int) * n);
 		}
 		else if ((maybe) < (exp((-residueB-residueA)/T(x)))) {
-			randomSolution = randomNeighbor;
+			//randomSolution = randomNeighbor;
+			memcpy(randomSolution, randomNeighbor, sizeof(int) * n);
 		}
 		// get residues again in case anything changes
 		if(flag == 0){
@@ -510,11 +514,13 @@ int* sim_annealing(uint64_t* a, int n, int flag){
 		}
 
 		if (residueA < residueC){
-			iprvSolution = randomSolution;
+			memcpy(iprvSolution, randomSolution, sizeof(int) * n);
+			//iprvSolution = randomSolution;
 		}
+		free(randomNeighbor);
 	}
-	free(randomSolution);
-	free(randomNeighbor);
+	//free(randomSolution);
+
 	return iprvSolution;
 }
 
