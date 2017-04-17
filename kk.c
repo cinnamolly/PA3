@@ -27,7 +27,7 @@ void regenInput(char* filename, int n);
 
 
 int main(int argc, char *argv[]){
-
+	srand(time(NULL));
 	// clear result files 
 	FILE* f = fopen("residues.csv", "w");
 	FILE* f0 = fopen("kkresults.csv", "w");
@@ -278,7 +278,7 @@ void regenInput(char* filename, int n){
 	// Open the file for writing
 	FILE *file = fopen(filename, "w");
 
-	srand(time(NULL));
+	//srand(time(NULL));
 	for (int i = 0; i < n; ++i){
 		uint64_t val = pow(10, 12) * rand()/RAND_MAX;
 		while (val == 0){
@@ -363,8 +363,9 @@ int* randNeighbor_Prepartition(int* p, int n){
 }
 
 int* randSolution_Prepartition(uint64_t* a, int n){
-	srand(time(NULL));
+	//srand(time(NULL));
 	int r;
+
 	// allocated and zero initiates
 	int* p = calloc(n, sizeof(int));
 
