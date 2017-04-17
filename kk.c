@@ -35,9 +35,29 @@ int main(int argc, char *argv[]){
 	fclose(f);
 	fclose(f0);
 	fclose(f2);
-
+	int iterations = 100;
+	
+	uint64_t resd_RM[iterations];
+	double time_RM[iterations];
+	
+	uint64_t resd_PP[iterations];
+	double time_PP[iterations];
+		
+	uint64_t resd_repeatRand_RM[iterations];
+	double time_repeatRand_RM[iterations];
+	uint64_t resd_repeatRand_PP[iterations];
+	double time_repeatRand_PP[iterations];
+	uint64_t resd_hill_RM[iterations];
+	double time_hill_RM[iterations];
+	uint64_t resd_hill_PP[iterations];
+	double time_hill_PP[iterations];
+	uint64_t resd_sim_RM[iterations];
+	double time_sim_RM[iterations];
+	uint64_t resd_sim_PP[iterations];
+	double time_sim_PP[iterations];
+	
 	// 100 iterations
-	for(int w = 0; w < 1; w++)
+	for(int w = 0; w < 100; w++)
 	{
 		if (argc != 2){
 			printf("Input Argument: ./kk inputfile");
@@ -80,165 +100,123 @@ int main(int argc, char *argv[]){
 	    
 	    fclose(f0);
 		
-		int iterations = 25000;
-		
-		uint64_t resd_RM[iterations];
-		double time_RM[iterations];
-		
-		uint64_t resd_PP[iterations];
-		double time_PP[iterations];
-			
-		uint64_t resd_repeatRand_RM[iterations];
-		double time_repeatRand_RM[iterations];
-		uint64_t resd_repeatRand_PP[iterations];
-		double time_repeatRand_PP[iterations];
-		uint64_t resd_hill_RM[iterations];
-		double time_hill_RM[iterations];
-		uint64_t resd_hill_PP[iterations];
-		double time_hill_PP[iterations];
-		uint64_t resd_sim_RM[iterations];
-		double time_sim_RM[iterations];
-		uint64_t resd_sim_PP[iterations];
-		double time_sim_PP[iterations];
-		
+
 		printf("residue 1\n");
-		for(int i = 0; i < iterations; i++)
-		{
-			gettimeofday(&progtime[2], NULL);
-			int* randSoln = randSolution_RandomMove(a,n);
-			uint64_t residue_random = residue_RandomMove(randSoln, a, n);
-			//printf("Residue (Random Move): %lli\n", residue_random);
-			gettimeofday(&progtime[3], NULL);
-			resd_RM[i] = residue_random; 
-			time_RM[i] = (double)((progtime[3].tv_sec - progtime[2].tv_sec) * 1000000)
-				+ (progtime[3].tv_usec - progtime[2].tv_usec);
-			free(randSoln);
-		}
+		gettimeofday(&progtime[2], NULL);
+		int* randSoln = randSolution_RandomMove(a,n);
+		uint64_t residue_random = residue_RandomMove(randSoln, a, n);
+		//printf("Residue (Random Move): %lli\n", residue_random);
+		gettimeofday(&progtime[3], NULL);
+		resd_RM[w] = residue_random; 
+		//printf("residue random: %lli", resd_RM[w]);
+		time_RM[w] = (double)((progtime[3].tv_sec - progtime[2].tv_sec) * 1000000)
+			+ (progtime[3].tv_usec - progtime[2].tv_usec);
+		free(randSoln);
 		
 		printf("residue 2\n");
-		for(int i = 0; i < iterations; i++)
-		{
-			gettimeofday(&progtime[4], NULL);
-			int* randPrepartition = randSolution_Prepartition(a,n);
-			uint64_t residue_pre = residue_Prepartition(randPrepartition, a, n);
-			//printf("Residue (Prepartition): %lli\n", residue_pre);
-			gettimeofday(&progtime[5], NULL);
-			resd_PP[i] = residue_pre;
-			time_PP[i] = (double)((progtime[5].tv_sec - progtime[4].tv_sec) * 1000000)
-				+ (progtime[5].tv_usec - progtime[4].tv_usec);
-			free(randPrepartition);
-		}
+		gettimeofday(&progtime[4], NULL);
+		int* randPrepartition = randSolution_Prepartition(a,n);
+		uint64_t residue_pre = residue_Prepartition(randPrepartition, a, n);
+		//printf("Residue (Prepartition): %lli\n", residue_pre);
+		gettimeofday(&progtime[5], NULL);
+		resd_PP[w] = residue_pre;
+		time_PP[w] = (double)((progtime[5].tv_sec - progtime[4].tv_sec) * 1000000)
+			+ (progtime[5].tv_usec - progtime[4].tv_usec);
+		free(randPrepartition);
 		
 		
 		printf("residue 3\n");
-		
-		for(int i = 0; i < iterations; i++)
-		{
-			gettimeofday(&progtime[5], NULL);
-			int* random = repeated_random(a, n, 0);
-			uint64_t residue_RandomMove_RepeatedRandom = residue_RandomMove(random, a, n);
-			//printf("Residue (Random Move - Repeated Random): %lli\n", residue_RandomMove_RepeatedRandom);
-			gettimeofday(&progtime[6], NULL);
-			resd_repeatRand_RM[i] = residue_RandomMove_RepeatedRandom;
-			time_repeatRand_RM[i] = (double)((progtime[6].tv_sec - progtime[5].tv_sec) * 1000000)
-				+ (progtime[6].tv_usec - progtime[5].tv_usec);
-			free(random);
-		}
+		gettimeofday(&progtime[5], NULL);
+		int* random = repeated_random(a, n, 0);
+		uint64_t residue_RandomMove_RepeatedRandom = residue_RandomMove(random, a, n);
+		//printf("Residue (Random Move - Repeated Random): %lli\n", residue_RandomMove_RepeatedRandom);
+		gettimeofday(&progtime[6], NULL);
+		resd_repeatRand_RM[w] = residue_RandomMove_RepeatedRandom;
+		time_repeatRand_RM[w] = (double)((progtime[6].tv_sec - progtime[5].tv_sec) * 1000000)
+			+ (progtime[6].tv_usec - progtime[5].tv_usec);
+		free(random);
 		
 		printf("residue 4\n");
-		for(int i = 0; i < iterations; i++)
-		{
-			gettimeofday(&progtime[7], NULL);
-			int* random2 = repeated_random(a, n, 1);
-			uint64_t residue_Prepartition_RepeatedRandom = residue_Prepartition(random2, a, n);
-			//printf("Residue (Prepartition - Repeated Random): %lli\n", residue_Prepartition_RepeatedRandom);
-			gettimeofday(&progtime[8], NULL);
-			resd_repeatRand_PP[i] = residue_Prepartition_RepeatedRandom;
-			time_repeatRand_PP[i] = (double)((progtime[8].tv_sec - progtime[7].tv_sec) * 1000000)
-				+ (progtime[8].tv_usec - progtime[7].tv_usec);
-			free(random2);
-		}
+		gettimeofday(&progtime[7], NULL);
+		int* random2 = repeated_random(a, n, 1);
+		uint64_t residue_Prepartition_RepeatedRandom = residue_Prepartition(random2, a, n);
+		//printf("Residue (Prepartition - Repeated Random): %lli\n", residue_Prepartition_RepeatedRandom);
+		gettimeofday(&progtime[8], NULL);
+		resd_repeatRand_PP[w] = residue_Prepartition_RepeatedRandom;
+		time_repeatRand_PP[w] = (double)((progtime[8].tv_sec - progtime[7].tv_sec) * 1000000)
+			+ (progtime[8].tv_usec - progtime[7].tv_usec);
+		free(random2);
 		
 		printf("residue 5\n");
-		for(int i = 0; i < iterations; i++)
-		{
-			gettimeofday(&progtime[9], NULL);
-			int* hill = hill_climbing(a, n, 0);
-			uint64_t residue_RandomMove_HillClimbing = residue_RandomMove(hill, a, n);
-			//printf("Residue (Random Move - Hill Climbing): %lli\n", residue_RandomMove_HillClimbing);
-			gettimeofday(&progtime[10], NULL);
-			resd_hill_RM[i] = residue_RandomMove_HillClimbing;
-			time_hill_RM[i] = (double)((progtime[10].tv_sec - progtime[9].tv_sec) * 1000000)
-				+ (progtime[10].tv_usec - progtime[9].tv_usec);
-			free(hill);
-		}
+		gettimeofday(&progtime[9], NULL);
+		int* hill = hill_climbing(a, n, 0);
+		uint64_t residue_RandomMove_HillClimbing = residue_RandomMove(hill, a, n);
+		//printf("Residue (Random Move - Hill Climbing): %lli\n", residue_RandomMove_HillClimbing);
+		gettimeofday(&progtime[10], NULL);
+		resd_hill_RM[w] = residue_RandomMove_HillClimbing;
+		time_hill_RM[w] = (double)((progtime[10].tv_sec - progtime[9].tv_sec) * 1000000)
+			+ (progtime[10].tv_usec - progtime[9].tv_usec);
+		free(hill);
 		
 		printf("residue 6\n");
-		for(int i = 0; i < iterations; i++){
-			gettimeofday(&progtime[11], NULL);
-			int* hill2 = hill_climbing(a, n, 1);
-			uint64_t residue_Prepartition_HillClimbing = residue_Prepartition(hill2, a, n);
-			//printf("Residue (Prepartition - Hill Climbing): %lli\n", residue_Prepartition_HillClimbing);
-			gettimeofday(&progtime[12], NULL);
-			resd_hill_PP[i] = residue_Prepartition_HillClimbing;
-			time_hill_PP[i] = (double)((progtime[12].tv_sec - progtime[11].tv_sec) * 1000000)
-				+ (progtime[12].tv_usec - progtime[11].tv_usec);
-			free(hill2);
-		}
+		gettimeofday(&progtime[11], NULL);
+		int* hill2 = hill_climbing(a, n, 1);
+		uint64_t residue_Prepartition_HillClimbing = residue_Prepartition(hill2, a, n);
+		//printf("Residue (Prepartition - Hill Climbing): %lli\n", residue_Prepartition_HillClimbing);
+		gettimeofday(&progtime[12], NULL);
+		resd_hill_PP[w] = residue_Prepartition_HillClimbing;
+		time_hill_PP[w] = (double)((progtime[12].tv_sec - progtime[11].tv_sec) * 1000000)
+			+ (progtime[12].tv_usec - progtime[11].tv_usec);
+		free(hill2);
 		
 		printf("residue 7\n");
-		for(int i = 0; i < iterations; i++){
-			gettimeofday(&progtime[13], NULL);
-			int* anneal1 = sim_annealing(a, n, 0);
-			uint64_t residue_RandomMove_simanneal = residue_RandomMove(anneal1, a, n);
-			//printf("Residue (Random Move - Simulated Annealing): %lli\n", residue_RandomMove_simanneal);
-			gettimeofday(&progtime[14], NULL);
-			resd_sim_RM[i] = residue_RandomMove_simanneal;
-			time_sim_RM[i] = (double)((progtime[14].tv_sec - progtime[13].tv_sec) * 1000000)
-				+ (progtime[14].tv_usec - progtime[13].tv_usec);
-			free(anneal1);
-		}
+		gettimeofday(&progtime[13], NULL);
+		int* anneal1 = sim_annealing(a, n, 0);
+		uint64_t residue_RandomMove_simanneal = residue_RandomMove(anneal1, a, n);
+		//printf("Residue (Random Move - Simulated Annealing): %lli\n", residue_RandomMove_simanneal);
+		gettimeofday(&progtime[14], NULL);
+		resd_sim_RM[w] = residue_RandomMove_simanneal;
+		time_sim_RM[w] = (double)((progtime[14].tv_sec - progtime[13].tv_sec) * 1000000)
+			+ (progtime[14].tv_usec - progtime[13].tv_usec);
+		free(anneal1);
 		
 		printf("residue 8\n");
-		for(int i = 0; i < iterations; i++){
-			gettimeofday(&progtime[15], NULL);
-			int* anneal2 = sim_annealing(a, n, 1);
-			uint64_t residue_Prepartition_simanneal = residue_Prepartition(anneal2, a, n);
-			//printf("Residue (Prepartition- Simulated Annealing): %lli\n", residue_Prepartition_simanneal);
-			gettimeofday(&progtime[16], NULL);
-			resd_sim_PP[i] = residue_Prepartition_simanneal;
-			time_sim_PP[i] = (double)((progtime[16].tv_sec - progtime[15].tv_sec) * 1000000)
-				+ (progtime[16].tv_usec - progtime[15].tv_usec);
-			free(anneal2);
-		}
-		
-		
-	    FILE* f = fopen("residues.csv", "a");
-	    if (f == NULL) {
-	        printf("Error opening file\n");
-	    }
-	    for (int i = 0; i < iterations; i++) {
-	    	fprintf(f, "%lld,%lld,%lld,%lld,%lld,%lld,%lld,%lld\n", resd_RM[i], resd_PP[i], 
-	    		resd_repeatRand_RM[i], resd_repeatRand_PP[i], resd_hill_RM[i], resd_hill_PP[i], 
-	    		resd_sim_RM[i], resd_sim_PP[i]);
-	    }
-
-	    fclose(f);
-
-	    FILE* f2 = fopen("runtimes.csv", "a");
-	    if (f2 == NULL) {
-	        printf("Error opening file\n");
-	    }
-		for (int i = 0; i < iterations; i++) {
-	    	fprintf(f2, "%f,%f,%f,%f,%f,%f,%f,%f\n", time_RM[i], time_PP[i], 
-	    		time_repeatRand_RM[i], time_repeatRand_PP[i], time_hill_RM[i], 
-	    		time_hill_PP[i], time_sim_RM[i], time_sim_PP[i]);
-		}
-		
-	    fclose(f2);
+		gettimeofday(&progtime[15], NULL);
+		int* anneal2 = sim_annealing(a, n, 1);
+		uint64_t residue_Prepartition_simanneal = residue_Prepartition(anneal2, a, n);
+		//printf("Residue (Prepartition- Simulated Annealing): %lli\n", residue_Prepartition_simanneal);
+		gettimeofday(&progtime[16], NULL);
+		resd_sim_PP[w] = residue_Prepartition_simanneal;
+		time_sim_PP[w] = (double)((progtime[16].tv_sec - progtime[15].tv_sec) * 1000000)
+			+ (progtime[16].tv_usec - progtime[15].tv_usec);
+		free(anneal2);
 	    
 		free(a);
 	}
+	FILE* fA = fopen("residues.csv", "a");
+    if (fA == NULL) {
+        printf("Error opening file\n");
+    }
+    for (int i = 0; i < iterations; i++) {
+    	//printf("RESIDUE: %lli\n", resd_RM[i]);
+    	fprintf(fA, "%lld,%lld,%lld,%lld,%lld,%lld,%lld,%lld\n", resd_RM[i], resd_PP[i], 
+    		resd_repeatRand_RM[i], resd_repeatRand_PP[i], resd_hill_RM[i], resd_hill_PP[i], 
+    		resd_sim_RM[i], resd_sim_PP[i]);
+    }
+
+    fclose(fA);
+
+    FILE* fB = fopen("runtimes.csv", "a");
+    if (fB == NULL) {
+        printf("Error opening file\n");
+    }
+	for (int i = 0; i < iterations; i++) {
+    	fprintf(fB, "%f,%f,%f,%f,%f,%f,%f,%f\n", time_RM[i], time_PP[i], 
+    		time_repeatRand_RM[i], time_repeatRand_PP[i], time_hill_RM[i], 
+    		time_hill_PP[i], time_sim_RM[i], time_sim_PP[i]);
+	}
+	
+    fclose(fB);
 
 	return 0;
 }
@@ -397,7 +375,7 @@ int* repeated_random(uint64_t* a, int n, int flag){
 	else{
 		randomSolutionA = randSolution_Prepartition(a,n);
 	}
-	for(int x = 0; x < n; x++){
+	for(int x = 0; x < 25000; x++){
 		//printf("B\n");
 		int* randomSolutionB;
 		uint64_t residueA;
@@ -430,7 +408,7 @@ int* hill_climbing(uint64_t* a, int n, int flag){
 	else{
 		randomSolution = randSolution_Prepartition(a,n);
 	}
-	for(int x = 0; x < n; x++){
+	for(int x = 0; x < 25000; x++){
 		int* randomNeighbor;
 		if(flag == 0){
 			randomNeighbor = randNeighbor_RandomMove(randomSolution, n);
@@ -468,7 +446,7 @@ int* sim_annealing(uint64_t* a, int n, int flag){
 	}
 	int* iprvSolution = randomSolution; // S'' = S
 
-	for(int x = 0; x < n; x++){
+	for(int x = 0; x < 25000; x++){
 		int* randomNeighbor;   // S
 		if(flag == 0){
 			randomNeighbor = randNeighbor_RandomMove(randomSolution, n);
