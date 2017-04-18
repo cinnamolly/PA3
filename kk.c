@@ -21,7 +21,7 @@ int* repeated_random(uint64_t* a, int n, int flag);
 int* hill_climbing(uint64_t* a, int n, int flag);
 int* sim_annealing(uint64_t* a, int n, int flag);
 
-double T(int k);
+uint64_t T(int k);
 
 void regenInput(char* filename, int n);
 
@@ -162,7 +162,7 @@ int main(int argc, char *argv[]){
 		gettimeofday(&progtime[11], NULL);
 		int* hill2 = hill_climbing(a, n, 1);
 		uint64_t residue_Prepartition_HillClimbing = residue_Prepartition(hill2, a, n);
-		//printf("Residue (Prepartition - Hill Climbing): %lli\n", residue_Prepartition_HillClimbing);
+		printf("Residue (Prepartition - Hill Climbing): %lli\n", residue_Prepartition_HillClimbing);
 		gettimeofday(&progtime[12], NULL);
 		resd_hill_PP[w] = residue_Prepartition_HillClimbing;
 		time_hill_PP[w] = (double)((progtime[12].tv_sec - progtime[11].tv_sec) * 1000000)
@@ -173,7 +173,7 @@ int main(int argc, char *argv[]){
 		gettimeofday(&progtime[13], NULL);
 		int* anneal1 = sim_annealing(a, n, 0);
 		uint64_t residue_RandomMove_simanneal = residue_RandomMove(anneal1, a, n);
-		//printf("Residue (Random Move - Simulated Annealing): %lli\n", residue_RandomMove_simanneal);
+		printf("Residue (Random Move - Simulated Annealing): %lli\n", residue_RandomMove_simanneal);
 		gettimeofday(&progtime[14], NULL);
 		resd_sim_RM[w] = residue_RandomMove_simanneal;
 		time_sim_RM[w] = (double)((progtime[14].tv_sec - progtime[13].tv_sec) * 1000000)
@@ -184,7 +184,7 @@ int main(int argc, char *argv[]){
 		gettimeofday(&progtime[15], NULL);
 		int* anneal2 = sim_annealing(a, n, 1);
 		uint64_t residue_Prepartition_simanneal = residue_Prepartition(anneal2, a, n);
-		//printf("Residue (Prepartition- Simulated Annealing): %lli\n", residue_Prepartition_simanneal);
+		printf("Residue (Prepartition- Simulated Annealing): %lli\n", residue_Prepartition_simanneal);
 		gettimeofday(&progtime[16], NULL);
 		resd_sim_PP[w] = residue_Prepartition_simanneal;
 		time_sim_PP[w] = (double)((progtime[16].tv_sec - progtime[15].tv_sec) * 1000000)
@@ -437,6 +437,10 @@ int* hill_climbing(uint64_t* a, int n, int flag){
 }
 
 int* sim_annealing(uint64_t* a, int n, int flag){
+	/*printf("A:");
+	for(int x = 0; x< n; x++){
+		printf("%lli, ", a[x]);
+	}*/
 	int* randomSolution;
 	if(flag == 0){
 		randomSolution = randSolution_RandomMove(a,n);
@@ -445,7 +449,10 @@ int* sim_annealing(uint64_t* a, int n, int flag){
 		randomSolution = randSolution_Prepartition(a,n);
 	}
 	int* iprvSolution = randomSolution; // S'' = S
-
+	/*printf("Random Solution:");
+	for(int x = 0; x< n; x++){
+		printf("%lli, ", randomSolution[x]);
+	}*/
 	for(int x = 0; x < 25000; x++){
 		int* randomNeighbor;   // S
 		if(flag == 0){
@@ -454,12 +461,17 @@ int* sim_annealing(uint64_t* a, int n, int flag){
 		else{
 			randomNeighbor = randNeighbor_Prepartition(randomSolution, n);
 		}
+		/*printf("Random Neighbor");
+		for(int y = 0; y< n; y++){
+			printf("%lli, ", randomNeighbor[y]);
+		}*/
 
 		uint64_t residueA;        // residue of solution
 		uint64_t residueB;        // residue of neighbor
 		uint64_t residueC;        // residue of improved solu
 
-		if(flag ==0){
+
+		if(flag == 0){
 			residueA = residue_RandomMove(randomSolution, a, n);
 			residueB = residue_RandomMove(randomNeighbor, a, n);
 			residueC = residue_RandomMove(iprvSolution, a, n);
@@ -469,14 +481,27 @@ int* sim_annealing(uint64_t* a, int n, int flag){
 			residueB = residue_Prepartition(randomNeighbor, a, n);
 			residueC = residue_Prepartition(iprvSolution, a, n);
 		}
+		///printf("RES A: %lli\n", residueA);
+
+		//printf("RES B: %lli\n", residueB);
+		//printf("RES C: %lli\n", residueC);
 
 		double maybe = (double)rand() / RAND_MAX;
-
+		uint64_t t = T(x);
+		double val = -1.0*(residueB-residueA);
+		double total = val/t;
+		double e = exp(total);
+		/*printf("maybe: %f\n", maybe);
+		printf("T: %lli\n", t);
+		printf("val: %f\n", val);
+		printf("total: %f\n", total);
+		printf("exp: %f\n", e);*/
 		if (residueB < residueA){
 			//randomSolution = randomNeighbor;
 			memcpy(randomSolution, randomNeighbor, sizeof(int) * n);
 		}
-		else if ((maybe) < (exp((-residueB-residueA)/T(x)))) {
+		else if ((maybe) < val) {
+			//printf("HEREHEHEREHEHERHER");
 			//randomSolution = randomNeighbor;
 			memcpy(randomSolution, randomNeighbor, sizeof(int) * n);
 		}
@@ -500,13 +525,13 @@ int* sim_annealing(uint64_t* a, int n, int flag){
 	}
 	//free(randomSolution);
 
-	return iprvSolution;
+	return randomSolution;
 }
 
-double T(int k){
+uint64_t T(int k){
 	//k representes the iterations, which are passed in
 	// High initial value for high initial acceptability
-	double T_init = pow(10, 10);
+	uint64_t T_init = pow(10, 10);
 	double a = 0.8;
 	return pow(a,k/300)*T_init;
 }
